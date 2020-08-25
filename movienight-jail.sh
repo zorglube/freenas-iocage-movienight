@@ -111,7 +111,6 @@ fi
 #####
 
 # List packages to be auto-installed after jail creation
-# Certaily useless
 cat <<__EOF__ >/tmp/pkg.json
 	{
   "pkgs":[
