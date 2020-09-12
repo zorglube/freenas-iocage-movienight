@@ -20,7 +20,7 @@ JAIL_INTERFACES=""
 DEFAULT_GW_IP=""
 INTERFACE="vnet0"
 VNET="on"
-JAIL_NAME="movienight"
+JAIL_NAME="movienight-test"
 CONFIG_NAME="mn-config"
 GO_DL_VERSION=""
 UID="movienight"
@@ -114,7 +114,7 @@ fi
 cat <<__EOF__ >/tmp/pkg.json
 	{
   "pkgs":[
-  	"nano","bash","gzip","ca_root_nss","git"
+  	"nano","bash","gzip","ca_root_nss","git","lang/go"
   ]
 }
 __EOF__
@@ -140,44 +140,13 @@ iocage exec "${JAIL_NAME}" "pw user add ${UID} -c ${GID} -u ${UID_GID_ID} -d /no
 #
 #####
 USR_LOCAL="/usr/local"
-GO_URL="https://golang.org/dl/${GO_DL_VERSION}"
-GO_PATH=${USR_LOCAL}"/go/bin"
 ROOT_PROFILE="/root/.profile"
 SHELL="/bin/bash"
 OS=`uname`
-
-if ! iocage exec "${JAIL_NAME}" fetch -o /tmp "${GO_URL}"
-then
-	echo "Failed to download GO"
-	exit 1
-fi
-if ! iocage exec "${JAIL_NAME}" tar xzf /tmp/"${GO_DL_VERSION}" -C "${USR_LOCAL}"
-then
-	echo "Failed to extract GO"
-	exit 1
-fi
-
-cat "${INCLUDES_PATH}/${ENV_VAR_UPDATE}_base" | sed 's@GO_PATH@'"${GO_PATH}"'@g' | sed 's@OS_VAL@'"${OS}"'@g' > "${INCLUDES_PATH}/${ENV_VAR_UPDATE}"
-
 INCLUDE_JAIL="/mnt/includes"
+
 iocage exec "${JAIL_NAME}" mkdir -p ${INCLUDE_JAIL}
 iocage fstab -a "${JAIL_NAME}" "${INCLUDES_PATH}" ${INCLUDE_JAIL} nullfs rw 0 0
-
-if ! iocage exec "${JAIL_NAME}" chmod 775 ${INCLUDE_JAIL}/${ENV_VAR_UPDATE}
-then 
-    echo "Failed to update chmod 775"
-    exit 1
-fi
-if ! iocage exec "${JAIL_NAME}" chmod +x ${INCLUDE_JAIL}/${ENV_VAR_UPDATE}
-then 
-    echo "Failed to update chmod +x"
-    exit 1
-fi
-if ! iocage exec "${JAIL_NAME}" ${INCLUDE_JAIL}/${ENV_VAR_UPDATE}
-then 
-    echo "Failed to update enviroment vars"
-    exit 1
-fi
 
 if ! iocage restart "${JAIL_NAME}"
 then 
@@ -204,16 +173,6 @@ then
 	echo "Failed to download Movie Night"
 	exit 1
 fi
-if ! iocage exec "${JAIL_NAME}" link ${GO_PATH}/go ${USR_LOCAL}/bin/go
-then 
-    echo "Failed link to GO"
-    exit 1
-fi
-if ! iocage exec "${JAIL_NAME}" link ${GO_PATH}/gofmt ${USR_LOCAL}/bin/gofmt
-then 
-    echo "Failed link to GOFMT"
-    exit 1
-fi
 if ! iocage exec "${JAIL_NAME}" "make TARGET=${TARGET} ARCH=${ARCH} -f ${MN_MAKEFILE} -C ${MN_HOME}"
 then
 	echo "Failed to make Movie Night"
@@ -226,12 +185,12 @@ then
 	exit 1
 fi 
 
-iocage exec "${JAIL_NAME}" rm /tmp/"${GO_DL_VERSION}"
+# iocage exec "${JAIL_NAME}" rm /tmp/"${GO_DL_VERSION}"
 
 # Copy pre-written config files
 iocage exec "${JAIL_NAME}" cp ${INCLUDE_JAIL}/movienight /usr/local/etc/rc.d/
 iocage exec "${JAIL_NAME}" chmod +x /usr/local/etc/rc.d/movienight
-iocage exec "${JAIL_NAME}" sysrc movienight_enable="YES"
+iocage exec "${JAIL_NAME}" sysrc movienight_enable=YES
 
 iocage restart "${JAIL_NAME}"
 

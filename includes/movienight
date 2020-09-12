@@ -39,6 +39,6 @@ daemon_status() {
 }
  
 load_rc_config $name
-: ${${name}_enable:=no}
+: ${rcvar:=no}
  
 run_rc_command "$1"
