@@ -20,16 +20,18 @@ JAIL_INTERFACES=""
 DEFAULT_GW_IP=""
 INTERFACE="vnet0"
 VNET="on"
-JAIL_NAME="movienight-test"
+JAIL_NAME="movienight"
 CONFIG_NAME="mn-config"
 GO_DL_VERSION=""
-UID="movienight"
+UID="movien"
 GID=${UID}
 UID_GID_ID="850"
 ENV_VAR_UPDATE="env_var_update.sh"
 TARGET=""
 ARCH=""
 MN_REPO=""
+# turn on the colors for the `iocage` command. 
+IOCAGE_COLOR=true
 
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "${SCRIPT}")
@@ -46,15 +48,17 @@ fi
 INCLUDES_PATH="${SCRIPTPATH}"/includes
 
 JAILS_MOUNT=$(zfs get -H -o value mountpoint $(iocage get -p)/iocage)
+# FreeNAS/TrueNAS Running instance version 
 RELEASE=$(freebsd-version | sed "s/STABLE/RELEASE/g" | sed "s/-p[0-9]*//")
+# Arbitrary selection of an version of the `iocage`
+#RELEASE=12.2-RELEASE
 
 #####
 #
 # Delete old Jail
 #
 #####
-iocage stop ${JAIL_NAME} 
-iocage destroy ${JAIL_NAME} 
+iocage destroy ${JAIL_NAME} --force --recursive
 
 #####
 #
@@ -120,7 +124,7 @@ cat <<__EOF__ >/tmp/pkg.json
 __EOF__
 
 # Create the jail and install previously listed packages
-if ! iocage create --name "${JAIL_NAME}" -p /tmp/pkg.json -r "${RELEASE}" interfaces="${JAIL_INTERFACES}" ip4_addr="${INTERFACE}|${JAIL_IP}/24" defaultrouter="${DEFAULT_GW_IP}" boot="on" host_hostname="${JAIL_NAME}" vnet="${VNET}" 
+if ! iocage create --name "${JAIL_NAME}" -p /tmp/pkg.json -r "${RELEASE}" interfaces="${JAIL_INTERFACES}" ip4_addr="${INTERFACE}|${JAIL_IP}" defaultrouter="${DEFAULT_GW_IP}" boot="on" host_hostname="${JAIL_NAME}" vnet="${VNET}" 
 then
 	echo "Failed to create jail"
 	exit 1
@@ -162,6 +166,9 @@ fi
 MN_URL=${MN_REPO}
 MN_HOME="/usr/local/movienight"
 MN_MAKEFILE="${MN_HOME}"/Makefile.BSD
+MN_LOG_FILE=/var/log/movienight.log
+BUILD_CMD="make TARGET=freebsd ARCH=amd64 -f ${MN_MAKEFILE} -C ${MN_HOME} -D SHELL=/usr/local/bin/bash"
+
 if ! iocage exec "${JAIL_NAME}" mkdir "${MN_HOME}"
 then
 	echo "Failed to create download temp dir"
@@ -173,19 +180,26 @@ then
 	echo "Failed to download Movie Night"
 	exit 1
 fi
-if ! iocage exec "${JAIL_NAME}" "make TARGET=${TARGET} ARCH=${ARCH} -f ${MN_MAKEFILE} -C ${MN_HOME}"
+if ! iocage exec "${JAIL_NAME}" "${BUILD_CMD}"
 then
 	echo "Failed to make Movie Night"
 	exit 1
 fi 
-
+if ! iocage exec ${JAIL_NAME} touch ${MN_LOG_FILE}
+then 
+	echo "Cant create log file"
+	exit 1
+fi
+if ! iocage exec ${JAIL_NAME} chown {UID}:{GID} ${MN_LOG_FILE} 
+then
+	echo "Can't chown ${MN_LOG_FILE}"
+	exit 1
+fi
 if ! iocage exec ${JAIL_NAME} chown -R ${UID}:${GID} ${MN_HOME}
 then
 	echo "Failed to chown ${MN_HOME}"
 	exit 1
 fi 
-
-# iocage exec "${JAIL_NAME}" rm /tmp/"${GO_DL_VERSION}"
 
 # Copy pre-written config files
 iocage exec "${JAIL_NAME}" cp ${INCLUDE_JAIL}/movienight /usr/local/etc/rc.d/
