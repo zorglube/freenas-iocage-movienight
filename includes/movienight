@@ -10,7 +10,7 @@ name="movienight"
 rcvar="${name}_enable"
 command="/usr/local/${name}/MovieNight -f /usr/local/${name}/settings.json"
 daemon_user="movien"
-managerPid="/var/run/${name}.manager.pid
+managerPid="/var/run/${name}.manager.pid"
 mnPid="/var/run/${name}.pid"
 
 start_cmd="daemon_start"
@@ -18,22 +18,23 @@ stop_cmd="daemon_stop"
 status_cmd="daemon_status"
 
 daemon_start() {
-	/usr/sbin/daemon -P ${managerPid} -p ${mnPid} -r -f -u $daemon_user $command
+	cd /usr/local/${name}
+	/usr/sbin/daemon -P ${managerPid} -p ${mnPid} -r -f -S -o /var/log/${name}.log -u ${daemon_user} ${command}
 }
 
 daemon_stop() {
-	if [ -e "${pidfile}" ]; 
+	if [ -e "${mnPid}" ]; 
 	then
-		kill -s TERM `cat ${pidfile}`
+		kill -s TERM `cat ${mnPid}`
 	else
 		echo "${name} is not running"
 	fi
 }
 
 daemon_status() {
-	if [ -e "${pidfile}" ]; 
+	if [ -e "${mnPid}" ]; 
 	then
-		echo "${name} is running as pid `cat ${pidfile}`"
+		echo "${name} is running as pid `cat ${mnPid}`"
 	else
 		echo "${name} is not running"
 	fi
