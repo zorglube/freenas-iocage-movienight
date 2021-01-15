@@ -190,7 +190,7 @@ then
 	echo "Cant create log file"
 	exit 1
 fi
-if ! iocage exec ${JAIL_NAME} chown {UID}:{GID} ${MN_LOG_FILE} 
+if ! iocage exec ${JAIL_NAME} chown ${UID}:${GID} ${MN_LOG_FILE} 
 then
 	echo "Can't chown ${MN_LOG_FILE}"
 	exit 1
