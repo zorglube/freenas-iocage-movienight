@@ -136,7 +136,7 @@ rm /tmp/pkg.json
 # Create user that run the MN process into the jail
 #
 ##
-iocage exec "${JAIL_NAME}" "pw user add ${UID} -c ${GID} -u ${UID_GID_ID} -d /nonexistent -s /bin/csh"
+iocage exec "${JAIL_NAME}" "pw user add ${UID} -c ${GID} -u ${UID_GID_ID} -d /usr/local/movienight/ -s /bin/csh"
 
 #####
 #
