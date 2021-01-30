@@ -24,7 +24,7 @@ daemon_start() {
 daemon_stop() {
 	if [ -e "${pidfile}" ]; 
 	then
-		kill -s TERM `cat ${pidfile}`
+		kill -s TERM `cat ${managerPid}`
 	else
 		echo "${name} is not running"
 	fi
