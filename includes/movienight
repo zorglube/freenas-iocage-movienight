@@ -22,7 +22,7 @@ daemon_start() {
 }
 
 daemon_stop() {
-	if [ -e "${pidfile}" ]; 
+	if [ -e "${managerPid}" ]; 
 	then
 		kill -s TERM `cat ${managerPid}`
 	else
