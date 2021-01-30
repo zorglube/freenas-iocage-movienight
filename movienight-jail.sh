@@ -136,7 +136,7 @@ rm /tmp/pkg.json
 # Create user that run the MN process into the jail
 #
 ##
-iocage exec "${JAIL_NAME}" "pw user add ${UID} -c ${GID} -u ${UID_GID_ID} -d /nonexistent -s /usr/bin/nologin"
+iocage exec "${JAIL_NAME}" "pw user add ${UID} -c ${GID} -u ${UID_GID_ID} -d /usr/local/movienight/ -s /bin/csh"
 
 #####
 #
@@ -190,7 +190,7 @@ then
 	echo "Cant create log file"
 	exit 1
 fi
-if ! iocage exec ${JAIL_NAME} chown {UID}:{GID} ${MN_LOG_FILE} 
+if ! iocage exec ${JAIL_NAME} chown ${UID}:${GID} ${MN_LOG_FILE} 
 then
 	echo "Can't chown ${MN_LOG_FILE}"
 	exit 1
