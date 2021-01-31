@@ -10,7 +10,7 @@ name="movienight"
 rcvar="${name}_enable"
 command="/usr/local/${name}/MovieNight -f /usr/local/${name}/settings.json"
 daemon_user="movien"
-managerPid="/var/run/${name}.manager.pid
+managerPid="/var/run/${name}.manager.pid"
 mnPid="/var/run/${name}.pid"
 
 start_cmd="daemon_start"
@@ -18,7 +18,7 @@ stop_cmd="daemon_stop"
 status_cmd="daemon_status"
 
 daemon_start() {
-	/usr/sbin/daemon -P ${managerPid} -p ${mnPid} -r -f -u $daemon_user $command
+	/usr/sbin/daemon -P ${managerPid} -p ${mnPid} -r -f -S -o /var/log/${name}.log -u ${daemon_user} ${command}
 }
 
 daemon_stop() {
