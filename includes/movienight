@@ -34,7 +34,7 @@ daemon_stop() {
 daemon_status() {
 	if [ -e "${mnPid}" ]; 
 	then
-		echo "${name} is running as pid `cat ${mnPid}`"
+		echo "${name} is running as pid `cat ${mnPid}`, with daemon manager (pid `cat ${managerPid}`)"
 	else
 		echo "${name} is not running"
 	fi
