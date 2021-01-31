@@ -18,7 +18,6 @@ stop_cmd="daemon_stop"
 status_cmd="daemon_status"
 
 daemon_start() {
-	cd /usr/local/${name}
 	/usr/sbin/daemon -P ${managerPid} -p ${mnPid} -r -f -S -o /var/log/${name}.log -u ${daemon_user} ${command}
 }
 
