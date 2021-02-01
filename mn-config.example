@@ -1,6 +1,5 @@
 JAIL_IP="10.1.1.3"
 DEFAULT_GW_IP="10.1.1.1"
-GO_DL_VERSION="go1.15.6.linux-amd64.tar.gz"
 TARGET="FreeBSD"
 ARCH="amd64"
 MN_REPO="https://github.com/zorchenhimer/MovieNight.git"
