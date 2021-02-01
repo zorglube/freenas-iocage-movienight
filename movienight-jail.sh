@@ -22,7 +22,6 @@ INTERFACE="vnet0"
 VNET="on"
 JAIL_NAME="movienight"
 CONFIG_NAME="mn-config"
-GO_DL_VERSION=""
 UID="movien"
 GID=${UID}
 UID_GID_ID="850"
@@ -77,10 +76,6 @@ if [ -z "${JAIL_INTERFACES}" ]; then
 fi
 if [ -z "${DEFAULT_GW_IP}" ]; then
   echo 'Configuration error: DEFAULT_GW_IP must be set'
-  exit 1
-fi
-if [ -z "${GO_DL_VERSION}" ]; then
-  echo 'Configuration error: GO_DL_VERSION must be set'
   exit 1
 fi
 if [ -z "${TARGET}" ]; then
