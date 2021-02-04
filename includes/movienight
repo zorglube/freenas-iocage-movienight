@@ -41,6 +41,6 @@ daemon_status() {
 }
  
 load_rc_config $name
-: ${rcvar:=no}
+: ${rcvar:="NO"}
  
 run_rc_command "$1"
