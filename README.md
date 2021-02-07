@@ -17,6 +17,10 @@ you wonder how to use after installation, have an look into the MovieNight manua
 MovieNight don't need to access any data outside of the jail. At this point, since MN  
 need an GO runtime, the runtime will be stored into the jail. 
 
+### Warning 
+This script isn't fully working at this time. 
+At the end of the deployment you'll HAVE TO connect to the Jail and customise the MovieNight `settings.json` file the restart the Jail. 
+
 ### Installation
 Download the repository to a convenient directory on your FreeNAS system by changing to that directory and running `git clone https://github.com/zorglube/freenas-iocage-movienight`. Then change into the new freenas-iocage-movienight directory and create a file called `mn-config` with your favorite text editor. In its minimal form, it would look like this: 
 ```
