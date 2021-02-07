@@ -58,7 +58,7 @@ Night home page.
 
 ## Movie Night running configuration 
 If you want to use some run arguments at the Movie Night start, have a look here [MovieNight_Configuration](https://github.com/zorglube/MovieNight#configuration) 
-to choose your option, then edit the service startup file `/usr/local/etc/rc.d/movinight` 
+to choose your option, then edit the service startup file `/usr/local/etc/rc.d/movienight` 
 customize the line `command_args=""`
 
 ## Support and Discussion
