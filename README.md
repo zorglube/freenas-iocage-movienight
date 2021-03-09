@@ -1,3 +1,6 @@
+# hazardous support
+Prefer the TrueNAS / FreeNAS plugin deployment tool. [ref](https://github.com/zorglube/iocage-plugin-movienight) 
+
 # freenas-iocage-movienight
 This is a simple script to automate the installation of MovieNight in a FreeNAS jail. It will create a jail, download 
 and install GO from [Golang](https://golang.org/dl/) and download compile and install the latest version of MovieNight from [MovieNight](https://github.com/zorchenhimer/MovieNight). 
